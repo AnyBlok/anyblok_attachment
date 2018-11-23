@@ -12,6 +12,11 @@
 CHANGELOG
 =========
 
+2.0.0
+-----
+
+* Removed sequence by document. Replaced it by by counter on latest document
+
 1.2.0 (2018-09-14)
 ------------------
 
