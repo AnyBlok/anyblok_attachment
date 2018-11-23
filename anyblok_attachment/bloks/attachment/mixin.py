@@ -8,7 +8,7 @@
 # obtain one at http://mozilla.org/MPL/2.0/.
 from anyblok import Declarations
 from anyblok.declarations import hybrid_method
-from anyblok.column import UUID, String
+from anyblok.column import UUID, Integer
 from anyblok.field import Function
 from .exceptions import NoneValueException, NotLatestException
 
@@ -59,7 +59,7 @@ class LatestDocument:
 class VersionedDocument:
 
     versioned_document_uuid = UUID()
-    versioned_document_version = String()
+    versioned_document_version_number = Integer()
     versioned_document = Function(fget='get_versioned_document',
                                   fset='set_versioned_document',
                                   fdel='del_versioned_document')
@@ -69,7 +69,7 @@ class VersionedDocument:
         query = Document.query()
         query = query.filter(
             Document.uuid == self.versioned_document_uuid,
-            Document.version == self.versioned_document_version
+            Document.version_number == self.versioned_document_version_number
         )
         return query.one_or_none()
 
@@ -78,13 +78,14 @@ class VersionedDocument:
             raise NoneValueException("Uuid value is None")
 
         self.versioned_document_uuid = document.uuid
-        self.versioned_document_version = document.version
+        self.versioned_document_version_number = document.version_number
 
     def del_versioned_document(self):
         self.versioned_document_uuid = None
-        self.versioned_document_version = None
+        self.versioned_document_version_number = None
 
     @hybrid_method
     def is_versioned_document(self, document):
-        return (self.versioned_document_uuid == document.uuid and
-                self.versioned_document_version == document.version)
+        return (
+            self.versioned_document_uuid == document.uuid and
+            self.versioned_document_version_number == document.version_number)

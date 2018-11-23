@@ -30,7 +30,7 @@ class TestLatest(BlokTestCase):
     def test_query_only_latest(self):
         document = self.registry.Attachment.Document.Latest.insert()
         self.registry.Attachment.Document.History.insert(uuid=document.uuid,
-                                                         version='other')
+                                                         version_number=100000)
         self.assertIs(
             self.registry.Attachment.Document.Latest.query().filter_by(
                 uuid=document.uuid).one(),
@@ -89,7 +89,7 @@ class TestLatest(BlokTestCase):
     def test_update_protected_fields(self):
         document = self.registry.Attachment.Document.insert()
         with self.assertRaises(ProtectedFieldException):
-            document.version = 'other'
+            document.version_number = 1000000000
             self.registry.flush()
 
     def test_add_new_version_without_file(self):

@@ -30,7 +30,7 @@ class TestFieldFunction(DBTestCase):
         t = registry.DocumentTest2.insert(versioned_document=doc)
         del t.versioned_document
         self.assertEqual(t.versioned_document_uuid, None)
-        self.assertEqual(t.versioned_document_version, None)
+        self.assertEqual(t.versioned_document_version_number, None)
         self.assertIsNone(t.versioned_document)
 
     def test_check_versioned_document(self):

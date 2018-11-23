@@ -30,7 +30,8 @@ class Document:
     DOCUMENT_TYPE = None
 
     uuid = UUID(primary_key=True, binary=False, nullable=False)
-    version = String(primary_key=True, nullable=False)
+    version_number = Integer(primary_key=True, nullable=False)
+    version = Function(fget="get_version")
 
     created_at = DateTime(default=datetime.now, nullable=False)
     historied_at = DateTime()
@@ -48,7 +49,7 @@ class Document:
                      nullable=False)
 
     previous_doc_uuid = UUID()
-    previous_doc_version = String()
+    previous_doc_version_number = Integer()
     previous_version = Function(fget="get_previous_version")
     next_version = Function(fget="get_next_version")
     previous_versions = Function(fget="get_previous_versions")
@@ -64,18 +65,23 @@ class Document:
     def set_file(self, file_):
         self.file = file_
 
+    def get_version(self):
+        return "V-%06d" % self.version_number
+
     def get_previous_version(self):
         Doc = self.registry.Attachment.Document
         query = Doc.query()
         query = query.filter(Doc.uuid == self.previous_doc_uuid)
-        query = query.filter(Doc.version == self.previous_doc_version)
+        query = query.filter(
+            Doc.version_number == self.previous_doc_version_number)
         return query.one_or_none()
 
     def get_next_version(self):
         Doc = self.registry.Attachment.Document
         query = Doc.query()
         query = query.filter(Doc.previous_doc_uuid == self.uuid)
-        query = query.filter(Doc.previous_doc_version == self.version)
+        query = query.filter(
+            Doc.previous_doc_version_number == self.version_number)
         return query.one_or_none()
 
     def get_previous_versions(self):
@@ -130,11 +136,8 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
     @classmethod
     def insert(cls, *args, **kwargs):
         uuid = uuid1()
-        code = 'Attachment.Document' + '#' + str(uuid)
-        formater = "V-{seq:06d}"
-        seq = cls.registry.System.Sequence.insert(code=code, formater=formater)
         values = kwargs.copy()
-        values.update(dict(uuid=uuid, version=seq.nextval()))
+        values.update(dict(uuid=uuid, version_number=1))
         return super(Latest, cls).insert(*args, **values)
 
     def get_modified_fields(self):
@@ -158,7 +161,7 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
 
     @classmethod
     def get_forbidden_modify_fields(cls):
-        return ['uuid', 'version', 'creates_at',
+        return ['uuid', 'version_number', 'creates_at',
                 'attachment_document_uuid', 'attachment_document_version']
 
     def is_unmodified_file(self, modified_fields):
@@ -182,17 +185,14 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
             )
 
         Q = cls.query().filter(cls.uuid == target.uuid)
-        Q = Q.filter(cls.version == target.version)
+        Q = Q.filter(cls.version_number == target.version_number)
         Q = Q.filter(cls.filter_has_not_file())
         if Q.count():
             # No file in DB, then no archive is need
             return
 
-        code = 'Attachment.Document' + '#' + str(target.uuid)
-        Seq = cls.registry.System.Sequence
-        seq = Seq.query().filter(Seq.code == code).one()
-        old_version = target.version
-        new_version = seq.nextval()
+        old_version_number = target.version_number
+        new_version_number = old_version_number + 1
 
         Column = cls.registry.System.Column
         columns = Column.query().filter(
@@ -200,10 +200,10 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
         columns = columns.all().name
         new_vals = {x: getattr(target, x) for x in columns}
 
-        target.version = new_version
+        target.version_number = new_version_number
         target.created_at = datetime.now()
         target.previous_doc_uuid = target.uuid
-        target.previous_doc_version = old_version
+        target.previous_doc_version_number = old_version_number
 
         if target.type != 'latest':
             target.type = 'latest'
@@ -215,16 +215,16 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
                 target.put_to_none(field)
 
         new_vals.update(target.update_copied_value(
-            modified_fields, old_version))
+            modified_fields, old_version_number))
         new_vals['type'] = 'history'
         target.new_history = new_vals
 
-    def update_copied_value(self, modified_fields, old_version):
+    def update_copied_value(self, modified_fields, old_version_number):
         document = self.registry.Attachment.Document.__table__
         query = select([getattr(document.c, field)
                         for field in modified_fields])
         query = query.where(document.c.uuid == self.uuid)
-        query = query.where(document.c.version == old_version)
+        query = query.where(document.c.version_number == old_version_number)
         res = self.registry.session.connection().execute(query)
 
         vals = res.fetchone()

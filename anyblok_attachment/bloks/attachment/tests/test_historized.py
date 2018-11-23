@@ -16,7 +16,7 @@ class TestHistorized(BlokTestCase):
     def test_query_only_history(self):
         document = self.registry.Attachment.Document.Latest.insert()
         history = self.registry.Attachment.Document.History.insert(
-            uuid=document.uuid, version='other')
+            uuid=document.uuid, version_number=100000)
         self.assertIs(
             self.registry.Attachment.Document.History.query().filter_by(
                 uuid=document.uuid).one(),
