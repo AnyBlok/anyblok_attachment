@@ -17,6 +17,42 @@ CHANGELOG
 
 * Removed sequence by document. Replaced it by by counter on latest document
 
+.. warning::
+
+    Use this script to update the database before migration::
+
+        CREATE FUNCTION update_attachment() RETURNS void AS $$
+            DECLARE
+                -- declarations
+                target RECORD;
+            BEGIN
+                FOR target IN select uuid, version from attachment_document where version_number is null LOOP
+                    UPDATE attachment_document SET version_number = CAST(substring(target.version from '..$') as Integer) WHERE uuid = target.uuid AND version = target.version;
+                END LOOP;
+            END;
+        $$ LANGUAGE plpgsql;
+
+        CREATE FUNCTION update_sequence() RETURNS void AS $$
+            DECLARE
+                -- declarations
+                seq RECORD;
+            BEGIN
+                FOR seq IN select id, seq_name from system_sequence where code ilike 'Attachment.Document#%' LOOP
+                    EXECUTE 'DROP SEQUENCE ' || quote_ident(seq.seq_name);
+                    DELETE FROM system_sequence where id = seq.id;
+                END LOOP;
+            END;
+        $$ LANGUAGE plpgsql;
+
+        ALTER TABLE attachment_document DROP CONSTRAINT anyblok_pk_attachment_document;
+        ALTER TABLE attachment_document ADD COLUMN version_number INTEGER;
+        select update_attachment();
+        select update_sequence();
+        ALTER TABLE attachment_document ADD PRIMARY KEY (uuid, version_number);
+        DROP FUNCTION update_attachment();
+        DROP FUNCTION update_sequence();
+
+
 1.2.0 (2018-09-14)
 ------------------
 
