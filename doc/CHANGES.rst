@@ -49,6 +49,7 @@ CHANGELOG
         select update_attachment();
         select update_sequence();
         ALTER TABLE attachment_document ADD PRIMARY KEY (uuid, version_number);
+        UPDATE system_blok SET installed_version = '2.0.0' WHERE name = 'attachment';
         DROP FUNCTION update_attachment();
         DROP FUNCTION update_sequence();
 
