@@ -12,14 +12,14 @@
 CHANGELOG
 =========
 
-2.0.0
------
+2.0.0 (2018-11-28)
+------------------
 
-* Removed sequence by document. Replaced it by by counter on latest document
+* Removed the sequence created by the document. Replaced it by a simple counter on latest document
 
-.. warning::
+.. note::
 
-    Use this script to update the database before migration::
+    You can use this script before migration to update the database::
 
         CREATE FUNCTION update_attachment() RETURNS void AS $$
             DECLARE
