@@ -21,7 +21,6 @@ virtualenv:
 
 services:
   - postgresql
-  - rabbitmq
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update ; fi
@@ -36,10 +35,9 @@ install:
   - pip install psycopg2
   - pip install anyblok
   - pip install flake8
-  - pip install coverage
-  - pip install nose
+  - pip install -u pytest pytest-cov
   - pip install coveralls
-  - python setup.py develop
+  - pip install .
 
 env:
   global:
@@ -50,10 +48,10 @@ env:
 script:
   - flake8 anyblok_attachment
   - psql -c 'create database travis_ci_test;' -U postgres
-  - nosetests anyblok_attachment/tests -v -s --with-coverage --cover-package=anyblok_attachment
+  - pytest  --cov-report= --cov=anyblok_attachment  anyblok_attachment/tests
   - psql -c 'drop database travis_ci_test;' -U postgres
   - anyblok_createdb --install-all-bloks
-  - nosetests anyblok_attachment/bloks --with-anyblok-bloks -v -s --with-coverage --cover-package=anyblok_attachment
+  - pytest --cov-report= --cov=anyblok_attachment anyblok_attachment/bloks
   
 after_success:
-  coveralls
+  coveralls --data_file=.coverage --config_file=.coveragerc
