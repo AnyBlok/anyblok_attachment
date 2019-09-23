@@ -281,7 +281,7 @@
 <p id="n212" class="pln"><a href="#n212">212</a></p>
 <p id="n213" class="stm run hide_run"><a href="#n213">213</a></p>
 <p id="n214" class="stm run hide_run"><a href="#n214">214</a></p>
-<p id="n215" class="stm mis"><a href="#n215">215</a></p>
+<p id="n215" class="stm run hide_run"><a href="#n215">215</a></p>
 <p id="n216" class="pln"><a href="#n216">216</a></p>
 <p id="n217" class="pln"><a href="#n217">217</a></p>
 <p id="n218" class="stm run hide_run"><a href="#n218">218</a></p>
@@ -290,7 +290,7 @@
 <p id="n221" class="pln"><a href="#n221">221</a></p>
 <p id="n222" class="stm run hide_run"><a href="#n222">222</a></p>
 <p id="n223" class="pln"><a href="#n223">223</a></p>
-<p id="n224" class="stm run hide_run"><a href="#n224">224</a></p>
+<p id="n224" class="stm mis"><a href="#n224">224</a></p>
 <p id="n225" class="pln"><a href="#n225">225</a></p>
 <p id="n226" class="stm run hide_run"><a href="#n226">226</a></p>
 <p id="n227" class="pln"><a href="#n227">227</a></p>
@@ -512,7 +512,7 @@
 <p id="t212" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t213" class="stm run hide_run">    <span class="key">def</span> <span class="nam">check_flush_validity</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t214" class="stm run hide_run">        <span class="key">if</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">size</span> <span class="key">and</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">height</span> <span class="key">and</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">width</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t215" class="stm mis">            <span class="key">raise</span> <span class="nam">PageValidityException</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
+<p id="t215" class="stm run hide_run">            <span class="key">raise</span> <span class="nam">PageValidityException</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
 <p id="t216" class="pln">                <span class="str">"You must define a size or a height and width"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t217" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t218" class="stm run hide_run">        <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">size</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -521,7 +521,7 @@
 <p id="t221" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t222" class="stm run hide_run">    <span class="op">@</span><span class="nam">classmethod</span><span class="strut">&nbsp;</span></p>
 <p id="t223" class="pln">    <span class="key">def</span> <span class="nam">after_update_orm_event</span><span class="op">(</span><span class="nam">cls</span><span class="op">,</span> <span class="nam">mapper</span><span class="op">,</span> <span class="nam">connection</span><span class="op">,</span> <span class="nam">target</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t224" class="stm run hide_run">        <span class="nam">target</span><span class="op">.</span><span class="nam">check_flush_validity</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t224" class="stm mis">        <span class="nam">target</span><span class="op">.</span><span class="nam">check_flush_validity</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t225" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t226" class="stm run hide_run">    <span class="op">@</span><span class="nam">classmethod</span><span class="strut">&nbsp;</span></p>
 <p id="t227" class="pln">    <span class="key">def</span> <span class="nam">after_insert_orm_event</span><span class="op">(</span><span class="nam">cls</span><span class="op">,</span> <span class="nam">mapper</span><span class="op">,</span> <span class="nam">connection</span><span class="op">,</span> <span class="nam">target</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -536,7 +536,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.4</a>,
-            created at 2019-09-17 09:27
+            created at 2019-09-23 17:58
         </p>
     </div>
 </div>

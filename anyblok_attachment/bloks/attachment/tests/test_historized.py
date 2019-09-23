@@ -15,28 +15,29 @@ from os import urandom
 @pytest.mark.usefixtures('rollback_registry')
 class TestHistorized:
 
-    def test_query_only_history(self, rollback_registry):
-        registry = rollback_registry
-        document = registry.Attachment.Document.Latest.insert()
-        history = registry.Attachment.Document.History.insert(
+    @pytest.fixture(autouse=True, scope='function')
+    def define_registry(self, rollback_registry):
+        self.registry = rollback_registry
+
+    def test_query_only_history(self):
+        document = self.registry.Attachment.Document.Latest.insert()
+        history = self.registry.Attachment.Document.History.insert(
             uuid=document.uuid, version_number=100000)
-        assert registry.Attachment.Document.History.query().filter_by(
+        assert self.registry.Attachment.Document.History.query().filter_by(
             uuid=document.uuid).one() is history
 
-    def test_update(self, rollback_registry):
-        registry = rollback_registry
+    def test_update(self):
         file_ = urandom(100)
-        document = registry.Attachment.Document.insert(file=file_)
+        document = self.registry.Attachment.Document.insert(file=file_)
         document.historize_a_copy()
         with pytest.raises(ForbidUpdateException):
             document.previous_version.data = {'other': 'data'}
-            registry.flush()
+            self.registry.flush()
 
-    def test_delete(self, rollback_registry):
-        registry = rollback_registry
+    def test_delete(self):
         file_ = urandom(100)
-        document = registry.Attachment.Document.insert(file=file_)
+        document = self.registry.Attachment.Document.insert(file=file_)
         document.historize_a_copy()
         with pytest.raises(ForbidDeleteException):
             document.previous_version.delete()
-            registry.flush()
+            self.registry.flush()
