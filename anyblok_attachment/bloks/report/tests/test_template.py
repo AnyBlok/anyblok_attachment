@@ -1,24 +1,30 @@
 # This file is a part of the AnyBlok / Attachment api project
 #
 #    Copyright (C) 2018 Jean-Sebastien SUZANNE <jssuzanne@anybox.fr>
+#    Copyright (C) 2019 Jean-Sebastien SUZANNE <js.suzanne@gmail.com>
 #
 # This Source Code Form is subject to the terms of the Mozilla Public License,
 # v. 2.0. If a copy of the MPL was not distributed with this file,You can
 # obtain one at http://mozilla.org/MPL/2.0/.
-from anyblok.tests.testcase import BlokTestCase
+import pytest
 from anyblok_attachment.bloks.report.exceptions import (
     RenderException, TemplateException, PathException)
 from os import urandom
 
 
-class TestTemplate(BlokTestCase):
+@pytest.mark.usefixtures('rollback_registry')
+class TestTemplate:
+
+    @pytest.fixture(autouse=True, scope='function')
+    def define_registry(self, rollback_registry):
+        self.registry = rollback_registry
 
     def test_without_render(self):
         template = self.registry.Attachment.Template.insert(
             name="test",
             template_path='report#=#tests/test_parser.py',
             model="Model.Attachment.Template")
-        with self.assertRaises(RenderException):
+        with pytest.raises(RenderException):
             template.render({})
 
     def test_check_if_file_must_be_generated_1(self):
@@ -28,7 +34,7 @@ class TestTemplate(BlokTestCase):
             model="Model.Attachment.Template")
         document = self.registry.Attachment.Document.insert(
             template=template)
-        self.assertTrue(template.check_if_file_must_be_generated(document))
+        assert template.check_if_file_must_be_generated(document)
 
     def test_check_if_file_must_be_generated_2(self):
         template = self.registry.Attachment.Template.insert(
@@ -36,7 +42,7 @@ class TestTemplate(BlokTestCase):
             template_path='report#=#tests/test_parser.py',
             model="Model.Attachment.Template")
         document = self.registry.Attachment.Document.insert()
-        self.assertFalse(template.check_if_file_must_be_generated(document))
+        assert not template.check_if_file_must_be_generated(document)
 
     def test_update_document(self):
         template = self.registry.Attachment.Template.insert(
@@ -48,28 +54,28 @@ class TestTemplate(BlokTestCase):
             template=template)
         file_ = urandom(10)
         template.update_document(document, file_, {})
-        self.assertEqual(document.file, file_)
-        self.assertEqual(document.contenttype, 'plain/text')
-        self.assertEqual(document.filesize, len(file_))
+        assert document.file == file_
+        assert document.contenttype == 'plain/text'
+        assert document.filesize == len(file_)
         filename = template.filename.format(doc=document)
-        self.assertEqual(document.filename, filename)
+        assert document.filename == filename
 
     def test_get_parser(self):
         template = self.registry.Attachment.Template.insert(
             name="test",
             template_path='report#=#tests/test_parser.py',
             model="Model.Attachment.Template")
-        self.assertIs(template.get_parser(), self.registry.Attachment.Parser)
+        assert template.get_parser() is self.registry.Attachment.Parser
 
     def test_get_template(self):
         template = self.registry.Attachment.Template.insert(
             name="test",
             template_path='report#=#tests/template.tmpl',
             model="Model.Attachment.Template")
-        self.assertEqual(template.get_template(), "template\n")
+        assert template.get_template() == "template\n"
 
     def test_without_parser(self):
-        with self.assertRaises(TemplateException):
+        with pytest.raises(TemplateException):
             self.registry.Attachment.Template.insert(
                 name="test",
                 template_path='report#=#tests/template.tmpl',
@@ -77,7 +83,7 @@ class TestTemplate(BlokTestCase):
                 model="Model.Attachment.Template")
 
     def test_without_template(self):
-        with self.assertRaises((TemplateException, PathException)):
+        with pytest.raises((TemplateException, PathException)):
             self.registry.Attachment.Template.insert(
                 name="test",
                 template_path='',

@@ -1,7 +1,7 @@
+psycopg2
 flake8
-coverage
-WebTest
 pytest
+pytest-cov
 ipdb
 ipdbplugin
 ipython

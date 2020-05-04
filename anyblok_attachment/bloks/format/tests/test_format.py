@@ -1,14 +1,20 @@
 # This file is a part of the AnyBlok / Attachment api project
 #
 #    Copyright (C) 2018 Jean-Sebastien SUZANNE <jssuzanne@anybox.fr>
+#    Copyright (C) 2019 Jean-Sebastien SUZANNE <js.suzanne@gmail.com>
 #
 # This Source Code Form is subject to the terms of the Mozilla Public License,
 # v. 2.0. If a copy of the MPL was not distributed with this file,You can
 # obtain one at http://mozilla.org/MPL/2.0/.
-from anyblok.tests.testcase import BlokTestCase
+import pytest
 
 
-class TestFormat(BlokTestCase):
+@pytest.mark.usefixtures('rollback_registry')
+class TestFormat:
+
+    @pytest.fixture(autouse=True, scope='function')
+    def define_registry(self, rollback_registry):
+        self.registry = rollback_registry
 
     def test_simple_format(self):
         template = self.registry.Attachment.Template.Format.insert(
@@ -37,4 +43,4 @@ class TestFormat(BlokTestCase):
                 b'\xa16\x8d\xc8\xcda\x91;\xba2\x9c\x9dUF\x10'
             ),
         }
-        self.assertEqual(get_file, wanted)
+        assert get_file == wanted
