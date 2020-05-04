@@ -154,7 +154,10 @@ class Template:
         if not document.has_file():
             return True
 
-        if document.file_added_at < self.updated_at:
+        try:
+            if document.file_added_at < self.updated_at:
+                return True
+        except TypeError:
             return True
 
         parser = self.get_parser()(self.model)
