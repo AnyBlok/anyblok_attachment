@@ -54,6 +54,7 @@ class TestTemplate:
             template=template)
         file_ = urandom(10)
         template.update_document(document, file_, {})
+        self.registry.flush()
         assert document.get_file()['file'] == file_
         assert document.contenttype == 'plain/text'
         assert document.filesize == len(file_)
