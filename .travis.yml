@@ -8,12 +8,6 @@ python:
   - "3.9-dev"
   - "nightly"
 
-env:
-    matrix:
-        - WITHPOSTGRES = "0"
-        - WITHPOSTGRES = "1"
-
-
 matrix:
   allow_failures:
       - python: "3.7-dev"
@@ -47,14 +41,16 @@ env:
     - ANYBLOK_DATABASE_NAME=travis_ci_test
     - ANYBLOK_DATABASE_DRIVER=postgresql
     - ANYBLOK_DATABASE_USER=postgres
+  matrix:
+    - BLOKS=attachment report wkhtml2pdf report-format
+    - BLOKS=attachment report wkhtml2pdf report-format anyblok-postgres
 
 script:
   - flake8 anyblok_attachment
   - psql -c 'create database travis_ci_test;' -U postgres
   - pytest  --cov-report= --cov=anyblok_attachment  anyblok_attachment/tests
   - psql -c 'drop database travis_ci_test;' -U postgres
-  - if [[ "$WITHPOSTGRES" == "0" ]]; then anyblok_createdb --install-bloks attachment report wkhtml2pdf report-format ; fi
-  - if [[ "$WITHPOSTGRES" == "1" ]]; then anyblok_createdb --install-bloks attachment report wkhtml2pdf report-format attachment-postgres ; fi
+  - anyblok_createdb --install-bloks $BLOKS
   - pytest --cov-report= --cov=anyblok_attachment anyblok_attachment/bloks
   
 after_success:
