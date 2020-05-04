@@ -2,12 +2,16 @@ language: python
 sudo: false
 
 python:
-  - "3.5"
   - "3.6"
   - "3.7"
-  - "3.7-dev" # 3.7 development branch
-  - "3.8-dev" # 3.8 development branch
+  - "3.8"
+  - "3.9-dev"
   - "nightly"
+
+env:
+    matrix:
+        - bloks='attachment report wkhtml2pdf report-format'
+        - bloks='attachment report wkhtml2pdf report-format anyblok-postgres'
 
 
 matrix:
@@ -49,7 +53,7 @@ script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - pytest  --cov-report= --cov=anyblok_attachment  anyblok_attachment/tests
   - psql -c 'drop database travis_ci_test;' -U postgres
-  - anyblok_createdb --install-all-bloks
+  - anyblok_createdb --install-bloks $bloks
   - pytest --cov-report= --cov=anyblok_attachment anyblok_attachment/bloks
   
 after_success:
