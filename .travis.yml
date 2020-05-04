@@ -10,8 +10,8 @@ python:
 
 env:
     matrix:
-        - bloks='attachment report wkhtml2pdf report-format'
-        - bloks='attachment report wkhtml2pdf report-format anyblok-postgres'
+        - BLOKS=attachment report wkhtml2pdf report-format
+        - BLOKS=attachment report wkhtml2pdf report-format anyblok-postgres
 
 
 matrix:
@@ -53,7 +53,7 @@ script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - pytest  --cov-report= --cov=anyblok_attachment  anyblok_attachment/tests
   - psql -c 'drop database travis_ci_test;' -U postgres
-  - anyblok_createdb --install-bloks $bloks
+  - anyblok_createdb --install-bloks $BLOKS
   - pytest --cov-report= --cov=anyblok_attachment anyblok_attachment/bloks
   
 after_success:
