@@ -42,8 +42,8 @@ env:
     - ANYBLOK_DATABASE_DRIVER=postgresql
     - ANYBLOK_DATABASE_USER=postgres
   matrix:
-    - BLOKS=attachment report wkhtml2pdf report-format
-    - BLOKS=attachment report wkhtml2pdf report-format anyblok-postgres
+    - BLOKS='attachment report wkhtml2pdf report-format'
+    - BLOKS='attachment report wkhtml2pdf report-format anyblok-postgres'
 
 script:
   - flake8 anyblok_attachment
