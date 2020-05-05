@@ -3,6 +3,7 @@
 ..    Copyright (C) 2017 Jean-Sebastien SUZANNE <jssuzanne@anybox.fr>
 ..    Copyright (C) 2018 Jean-Sebastien SUZANNE <jssuzanne@anybox.fr>
 ..    Copyright (C) 2018 Jean-Sebastien SUZANNE <js.suzanne@gmail.com>
+..    Copyright (C) 2020 Jean-Sebastien SUZANNE <js.suzanne@gmail.com>
 ..
 .. This Source Code Form is subject to the terms of the Mozilla Public License,
 .. v. 2.0. If a copy of the MPL was not distributed with this file,You can
@@ -13,10 +14,14 @@
 CHANGELOG
 =========
 
-2.0.1
+2.1.0
 -----
 
 * Removed **Python 3.4** capability
+* Removed **Python 3.5** capability
+* Refactored unittest, replaced nose by pytest
+* Added **attachment_postgres** blok, only for postgresql driver,
+  the **LargeBinary** column is replaced by **LargeObject** column
 
 2.0.0 (2018-11-28)
 ------------------
