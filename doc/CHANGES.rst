@@ -14,8 +14,8 @@
 CHANGELOG
 =========
 
-2.1.0
------
+2.1.0 (2020-05-05)
+------------------
 
 * Removed **Python 3.4** capability
 * Removed **Python 3.5** capability
