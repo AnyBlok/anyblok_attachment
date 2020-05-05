@@ -54,7 +54,13 @@ class TestTemplate:
             template=template)
         file_ = urandom(10)
         template.update_document(document, file_, {})
-        assert document.file == file_
+        attachment_postgres = self.registry.System.Blok.query().get(
+            'attachment-postgres')
+        if attachment_postgres.is_installed('attachment-postgres'):
+            assert document.lobject == file_
+        else:
+            assert document.file == file_
+
         assert document.contenttype == 'plain/text'
         assert document.filesize == len(file_)
         filename = template.filename.format(doc=document)

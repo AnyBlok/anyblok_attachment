@@ -55,6 +55,8 @@ setup(
             'report=anyblok_attachment.bloks.report:ReportBlok',
             'wkhtml2pdf=anyblok_attachment.bloks.wkhtml2pdf:WkHtml2PdfBlok',
             'report-format=anyblok_attachment.bloks.format:ReportBlok',
+            ('attachment-postgres=anyblok_attachment.bloks.postgres:'
+             'AttachmentPostgresBlok'),
         ],
         'test_bloks': [
             'test_report_1=anyblok_attachment.test_bloks.test1:TestBlok',
