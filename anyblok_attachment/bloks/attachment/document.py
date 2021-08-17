@@ -69,7 +69,7 @@ class Document:
         return "V-%06d" % self.version_number
 
     def get_previous_version(self):
-        Doc = self.registry.Attachment.Document
+        Doc = self.anyblok.Attachment.Document
         query = Doc.query()
         query = query.filter(Doc.uuid == self.previous_doc_uuid)
         query = query.filter(
@@ -77,7 +77,7 @@ class Document:
         return query.one_or_none()
 
     def get_next_version(self):
-        Doc = self.registry.Attachment.Document
+        Doc = self.anyblok.Attachment.Document
         query = Doc.query()
         query = query.filter(Doc.previous_doc_uuid == self.uuid)
         query = query.filter(
@@ -105,7 +105,7 @@ class Document:
     @classmethod
     def insert(cls, *args, **kwargs):
         if cls.__registry_name__ == 'Model.Attachment.Document':
-            return cls.registry.Attachment.Document.Latest.insert(
+            return cls.anyblok.Attachment.Document.Latest.insert(
                 *args, **kwargs)
 
         return super(Document, cls).insert(*args, **kwargs)
@@ -194,7 +194,7 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
         old_version_number = target.version_number
         new_version_number = old_version_number + 1
 
-        Column = cls.registry.System.Column
+        Column = cls.anyblok.System.Column
         columns = Column.query().filter(
             Column.model == 'Model.Attachment.Document')
         columns = columns.all().name
@@ -220,12 +220,12 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
         target.new_history = new_vals
 
     def update_copied_value(self, modified_fields, old_version_number):
-        document = self.registry.Attachment.Document.__table__
+        document = self.anyblok.Attachment.Document.__table__
         query = select([getattr(document.c, field)
                         for field in modified_fields])
         query = query.where(document.c.uuid == self.uuid)
         query = query.where(document.c.version_number == old_version_number)
-        res = self.registry.session.connection().execute(query)
+        res = self.anyblok.session.connection().execute(query)
 
         vals = res.fetchone()
         return {x: vals[x] for x in modified_fields}
@@ -233,10 +233,10 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
     @classmethod
     def after_update_orm_event(cls, mapper, connection, target):
         if hasattr(target, 'new_history') and target.new_history:
-            conn = cls.registry.session
+            conn = cls.anyblok.session
             conn.execute(
                 insert(
-                    cls.registry.Attachment.Document.History.__table__
+                    cls.anyblok.Attachment.Document.History.__table__
                 ).values(**target.new_history)
             )
             delattr(target, 'new_history')
@@ -247,9 +247,9 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
                 "Can not archive %s, because the document have not got file"
             )
 
-        self.registry.flush()  # the file must be send to exist on db
+        self.anyblok.flush()  # the file must be send to exist on db
         self.type = 'history'
-        self.registry.flush()  # flush call the listen then do the archive
+        self.anyblok.flush()  # flush call the listen then do the archive
 
     def add_new_version(self):
         if not self.has_file():
@@ -259,7 +259,7 @@ class Latest(Attachment.Document, Mixin.ForbidDelete):
         for field in self.get_file_fields():
             setattr(self, field, None)
 
-        self.registry.flush()  # flush call the listen then do the archive
+        self.anyblok.flush()  # flush call the listen then do the archive
 
 
 @register(Attachment.Document, tablename=Attachment.Document)

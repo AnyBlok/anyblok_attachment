@@ -22,7 +22,7 @@ class LatestDocument:
                                fdel='del_latest_document')
 
     def get_latest_document(self):
-        Document = self.registry.Attachment.Document.Latest
+        Document = self.anyblok.Attachment.Document.Latest
         query = Document.query()
         query = query.filter(
             Document.uuid == self.latest_document_uuid
@@ -65,7 +65,7 @@ class VersionedDocument:
                                   fdel='del_versioned_document')
 
     def get_versioned_document(self):
-        Document = self.registry.Attachment.Document
+        Document = self.anyblok.Attachment.Document
         query = Document.query()
         query = query.filter(
             Document.uuid == self.versioned_document_uuid,

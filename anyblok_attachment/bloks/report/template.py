@@ -33,7 +33,8 @@ class Template:
     updated_at = DateTime(nullable=False, default=datetime.now,
                           auto_update=True)
 
-    model = String(foreign_key=Model.System.Model.use('name'), nullable=False)
+    model = String(foreign_key=Model.System.Model.use('name'), nullable=False,
+                   size=256)
     filename = String(nullable=False,
                       default="{doc.uuid}-{doc.version}-{date}")
     type = Selection(selections="get_template_type", nullable=False)
@@ -99,7 +100,7 @@ class Template:
         """return the template file to compute"""
         if self.parser_from == 'model':
             if self.parser_model:
-                return self.registry.get(self.parser_model)
+                return self.anyblok.get(self.parser_model)
 
     def render(self, data):
         """Return the file create by the templating engine
