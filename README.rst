@@ -43,12 +43,12 @@ system.
 |                         |                 | templating engine.                                  |
 +-------------------------+-----------------+-----------------------------------------------------+
 | **report-format**       | **attachment**  | Simple templating engine, based on                  |
-|                         | **report**      | ``str.format(...)``                                 |
+|                         | **report**      | ``str.format(...)``.                                |
 +-------------------------+-----------------+-----------------------------------------------------+
 | **wkhtml2pdf**          | **attachment**  | Add Model add method to convert HTML 2 PDF.         |
 |                         | **report**      |                                                     |
 +-------------------------+-----------------+-----------------------------------------------------+
-| **attachment-postgres** | **attachment**  | Add Model add method to convert HTML 2 PDF.         |
+| **attachment-postgres** | **attachment**  | Save generated Document as PostgreSQL Large Object. |
 |                         |                 |                                                     |
 +-------------------------+-----------------+-----------------------------------------------------+
 
